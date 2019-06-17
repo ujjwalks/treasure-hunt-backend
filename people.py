@@ -5,23 +5,7 @@ people data
 
 from flask import make_response, abort
 from config import db
-from models import Person, PersonSchema, Note
-
-
-def read_all():
-    """
-    This function responds to a request for /api/people
-    with the complete lists of people
-
-    :return:        json string of list of people
-    """
-    # Create the list of people from our data
-    people = Person.query.order_by(Person.lname).all()
-
-    # Serialize the data for the response
-    person_schema = PersonSchema(many=True)
-    data = person_schema.dump(people).data
-    return data
+from models import Person, PersonSchema, Hunt
 
 
 def read_one(person_id):
@@ -35,7 +19,7 @@ def read_one(person_id):
     # Build the initial query
     person = (
         Person.query.filter(Person.person_id == person_id)
-        .outerjoin(Note)
+        .outerjoin(Hunt)
         .one_or_none()
     )
 
@@ -60,12 +44,10 @@ def create(person):
     :param person:  person to create in people structure
     :return:        201 on success, 406 on person exists
     """
-    fname = person.get("fname")
-    lname = person.get("lname")
+    email_id = person.get("email_id")
 
     existing_person = (
-        Person.query.filter(Person.fname == fname)
-        .filter(Person.lname == lname)
+        Person.query.filter(Person.email_id == email_id)
         .one_or_none()
     )
 
@@ -87,7 +69,7 @@ def create(person):
 
     # Otherwise, nope, person exists already
     else:
-        abort(409, f"Person {fname} {lname} exists already")
+        abort(409, f"Person with {email_id} exists already")
 
 
 def update(person_id, person):

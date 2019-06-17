@@ -13,6 +13,13 @@ class Person(db.Model):
     last_login = db.Column(
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
+    hunts = db.relationship(
+        "Hunt",
+        backref="hunt",
+        cascade="all, delete, delete-orphan",
+        single_parent=True,
+        order_by="desc(Hunt.timestamp)",
+    )
 
 
 class Hunt(db.Model):
@@ -23,11 +30,9 @@ class Hunt(db.Model):
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     location = db.Column(db.Text)
-    creator = db.Column(db.Integer, db.ForeignKey('person.person_id'))
-    created = db.Column(
-        db.DateTime, default=datetime.utcnow
-    )
-    updated = db.Column(
+    pass_code = db.Column(db.String,  default=lambda: str(db.uuid.uuid4()), unique=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('person.person_id'))
+    timestamp = db.Column(
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
     questions = db.relationship(
@@ -93,6 +98,8 @@ class PersonSchema(ma.ModelSchema):
         model = Person
         sqla_session = db.session
 
+    hunts = fields.Nested("PersonHuntSchema", default=[], many=True)
+
 
 class OptionSchema(ma.ModelSchema):
     def __init__(self, **kwargs):
@@ -144,6 +151,21 @@ class HuntQuestionSchema(ma.ModelSchema):
 
     hunt_id = fields.Int()
     question_id = fields.Int()
+    title = fields.Str()
+    description = fields.Str()
+    start_time = fields.DateTime()
+    end_time = fields.DateTime()
+    location = fields.Str()
+    pass_code = fields.Str()
+    timestamp = fields.DateTime()
+
+
+class PersonHuntSchema(ma.ModelSchema):
+    def __init__(self, **kwargs):
+        super().__init__(strict=True, **kwargs)
+
+    person_id = fields.Int()
+    hunt_id = fields.Int()
     title = fields.Str()
     description = fields.Str()
     max_score = fields.Int()
