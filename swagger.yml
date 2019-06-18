@@ -12,49 +12,7 @@ basePath: /api
 
 # Paths supported by the server application
 paths:
-  /people:
-    get:
-      operationId: people.read_all
-      tags:
-        - People
-      summary: Read the entire set of people, sorted by last name
-      description: Read the entire set of people, sorted by last name
-      responses:
-        200:
-          description: Successfully read people set operation
-          schema:
-            type: array
-            items:
-              properties:
-                person_id:
-                  type: integer
-                  description: Id of the person
-                fname:
-                  type: string
-                  description: First name of the person
-                lname:
-                  type: string
-                  description: Last name of the person
-                timestamp:
-                  type: string
-                  description: Create/Update timestamp of the person
-                notes:
-                  type: array
-                  items:
-                    properties:
-                      person_id:
-                        type: integer
-                        description: Id of person this note is associated with
-                      note_id:
-                        type: integer
-                        description: Id of this note
-                      content:
-                        type: string
-                        description: content of this note
-                      timestamp:
-                        type: string
-                        description: Create/Update timestamp of this note
-
+  /person:
     post:
       operationId: people.create
       tags:
@@ -75,6 +33,12 @@ paths:
               lname:
                 type: string
                 description: Last name of person to create
+              display_name:
+                type: String
+                description: Display Name for the user in the game
+              email_id:
+                type: String
+                description: Email id of the user after google login
       responses:
         201:
           description: Successfully created person
@@ -89,11 +53,17 @@ paths:
               lname:
                 type: string
                 description: Last name of the person
+              display_name:
+                type: String
+                description: Display Name for the user in the game
+              email_id:
+                  type: String
+                  description: Email id of the user after google login
               timestamp:
                 type: string
                 description: Creation/Update timestamp of the person record
 
-  /people/{person_id}:
+  /person/{email_id}:
     get:
       operationId: people.read_one
       tags:
@@ -124,22 +94,31 @@ paths:
               timestamp:
                 type: string
                 description: Creation/Update timestamp of the person record
-              notes:
+              display_name:
+                type: String
+                description: Display Name for the user in the game
+              email_id:
+                type: String
+                description: Email id of the user after google login
+              hunts:
                 type: array
                 items:
                   properties:
                     person_id:
                       type: integer
-                      description: Id of person this note is associated with
-                    note_id:
+                      description: Id of this person who attempted this hunt
+                    hunt_id:
                       type: integer
-                      description: Id of this note
-                    content:
+                      description: Id of this hunt
+                    score:
+                      type: integer
+                      description: Score received by person this hunt
+                    rank:
+                      type: integer
+                      description: Rank received by this person
+                    start_time:
                       type: string
-                      description: content of this note
-                    timestamp:
-                      type: string
-                      description: Create/Update timestamp of this note
+                      description: Start time of the hunt
 
     put:
       operationId: people.update
@@ -164,6 +143,9 @@ paths:
               lname:
                 type: string
                 description: Last name of the person
+              display_name:
+                type: string
+                description: Display name of the person
       responses:
         200:
           description: Successfully updated person
@@ -171,13 +153,19 @@ paths:
             properties:
               person_id:
                 type: integer
-                description: Id of the person in the database
+                description: Id of the person
               fname:
                 type: string
                 description: First name of the person
               lname:
                 type: string
                 description: Last name of the person
+              display_name:
+                type: String
+                description: Display Name for the user in the game
+              email_id:
+                type: String
+                description: Email id of the user after google login
               timestamp:
                 type: string
                 description: Creation/Update timestamp of the person record
@@ -186,7 +174,7 @@ paths:
       operationId: people.delete
       tags:
         - People
-      summary: Delete a person from the people list
+      summary: Delete a person from the database
       description: Delete a person
       parameters:
         - name: person_id
@@ -198,186 +186,109 @@ paths:
         200:
           description: Successfully deleted a person
 
-  /notes:
+  /hunts:
     get:
-      operationId: notes.read_all
+      operationId: hunts.read_all
       tags:
-        - Notes
-      summary: Read the entire set of notes for all people, sorted by timestamp
-      description: Read the entire set of notes for all people, sorted by timestamp
+        - Hunts
+      summary: Read the entire set of hunts, sorted by timestamp which are active
+      description: Read the entire set of hunts, sorted by timestamp which are active
       responses:
         200:
-          description: Successfully read notes for all people operation
+          description: Successfully read all active hunts
           schema:
             type: array
             items:
               properties:
-                note_id:
+                hunt_id:
                   type: integer
-                  description: Id of the note
-                content:
+                  description: Id of the hunt
+                person_id:
+                  type: integer
+                  description: Id of the person
+                description:
                   type: string
-                  description: Content of the note
+                  description: Description of the hunt
+                title:
+                  type: string
+                  description: Title of the hunt
+                location:
+                  type: string
+                  description: Location of the hunt
+                pass_code:
+                  type: string
+                  description: Passcode of the hunt
+                start_time:
+                  type: string
+                  description: start_time of the hunt
+                end_time:
+                  type: string
+                  description: end_time of the hunt
                 timestamp:
                   type: string
-                  description: Create/Update timestamp of the note
-                person:
-                  type: object
-                  properties:
-                    person_id:
-                      type: integer
-                      description: Id of associated person
-                    fname:
-                      type: string
-                      description: Frist name of associated person
-                    lname:
-                      type: string
-                      description: Last name of associated person
-                    timestamp:
-                      type: string
-                      description: Create/Update timestamp of associated person
+                  description: create and update time stamp of the hunt
+                questions:
+                  type: array
+                  items:
+                    properties:
+                      question_id:
+                        type: integer
+                        description: Id of the question
+                      hunt_id:
+                        type: integer
+                        description: Id of the hunt
+                      image_id:
+                        type: integer
+                        description: Id of the image associated with the question
+                      title:
+                        type: string
+                        description: Title of the question
+                      description:
+                        type: string
+                        description: Description of the question
+                      max_score:
+                        type: integer
+                        description: Max score of the question
+                      order:
+                        type: integer
+                        description: Order of the question
+                      options:
+                        type: array
+                        items:
+                          properties:
+                            option_id:
+                              type: integer
+                              description: Id of the option
+                            question_id:
+                              type: integer
+                              description: Id of the question
+                            description:
+                              type: string
+                              description: description of the option
+                            is_correct:
+                              type: boolean
+                              description: is the option correct
+                      image:
+                        type: object
+                        items:
+                          properties:
 
-
-  /people/{person_id}/notes:
-    post:
-      operationId: notes.create
-      tags:
-        - Notes
-      summary: Create a note associated with a person
-      description: Create a note associated with a person
-      parameters:
-        - name: person_id
-          in: path
-          description: Id of person associated with note
-          type: integer
-          required: True
-        - name: note
-          in: body
-          description: Text content of the note to create
-          required: True
-          schema:
-            type: object
-            properties:
-              content:
-                type: string
-                description: Text of the note to create
-      responses:
-        201:
-          description: Successfully created a note
-          schema:
-            properties:
-              person_id:
-                type: integer
-                description: Id of the person associated with the note
-              note_id:
-                type: integer
-                description: Id of the created note
-              content:
-                type: string
-                description: Text content of the note
-              timestamp:
-                type: string
-                description: Creation/Update timestamp of the person record
-
-  /people/{person_id}/notes/{note_id}:
-    get:
-      operationId: notes.read_one
-      tags:
-        - Notes
-      summary: Read a particular note associated with a person
-      description: Read a particular note associated with a person
-      parameters:
-        - name: person_id
-          in: path
-          description: Id of person associated with note
-          type: integer
-          required: True
-        - name: note_id
-          in: path
-          description: Id of note
-          type: integer
-          required: True
-      responses:
-        200:
-          description: Successfully read note for a person
-          schema:
-            type: object
-            properties:
-              note_id:
-                type: integer
-                description: Id of the note
-              person_id:
-                type: integer
-                description: Id of the person note associated with
-              content:
-                type: string
-                description: Text content of the note
-              timestamp:
-                type: string
-                description: Creation/Update timestamp of the note record
-
-    put:
-      operationId: notes.update
-      tags:
-        - Notes
-      summary: Update a note associated with a person
-      description: Update a note associated with a person
-      parameters:
-        - name: person_id
-          in: path
-          description: Id the person to update
-          type: integer
-          required: True
-        - name: note_id
-          in: path
-          description: Id of the note associated with a person
-          type: integer
-          required: True
-        - name: note
-          in: body
-          schema:
-            type: object
-            properties:
-              content:
-                type: string
-                description: Text content of the note to updated
-      responses:
-        200:
-          description: Successfully updated note
-          schema:
-            properties:
-              note_id:
-                type: string
-                description: Id of the note associated with a person
-              person_id:
-                type: integer
-                description: Id of the person in the database
-              content:
-                type: string
-                description: Text content of the updated note
-              timestamp:
-                type: string
-                description: Creation/Update timestamp of the note record
-
-    delete:
-      operationId: notes.delete
-      tags:
-        - Notes
-      summary: Delete a note associated with a person
-      description: Delete a note associated with a person
-      parameters:
-        - name: person_id
-          in: path
-          description: Id of person associated with note
-          type: integer
-          required: True
-        - name: note_id
-          in: path
-          description: Id of note
-          type: integer
-          required: True
-      responses:
-        200:
-          description: Successfully deleted a note
-
-
+                            hint = fields.Str()
+                            url = fields.Str()
+                            lat = fields.Float()
+                            long = fields.Float()
+                            image_id:
+                              type: integer
+                              description: Id of the image
+                            hint:
+                              type: string
+                              description: hint for the image
+                            url:
+                              type: string
+                              description: url for the image
+                            lat:
+                              type: number
+                              description: latitude of position where image is clicked
+                            long:
+                              type: number
+                              description: longitude of position where image is clicked

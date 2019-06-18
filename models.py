@@ -14,11 +14,11 @@ class Person(db.Model):
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
     hunts = db.relationship(
-        "Hunt",
-        backref="hunt",
+        "HuntPerson",
+        backref="huntperson",
         cascade="all, delete, delete-orphan",
         single_parent=True,
-        order_by="desc(Hunt.timestamp)",
+        order_by="desc(Hunt.start_time)",
     )
 
 
@@ -49,6 +49,8 @@ class Image(db.Model):
     image_id = db.Column(db.Integer, primary_key=True)
     hint = db.Column(db.Text)
     url = db.Column(db.Text)
+    lat = db.Column(db.Float)
+    long = db.Column(db.Float)
 
 
 class Question(db.Model):
@@ -81,6 +83,7 @@ class HuntPerson(db.Model):
     hunt_id = db.Column(db.Integer, db.ForeignKey('hunt.hunt_id'))
     person_id = db.Column(db.Integer, db.ForeignKey('person.person_id'))
     score = db.Column(db.Integer, default=0)
+    rank = db.Column(db.Integer, default=-1)
     start_time = db.Column(
         db.DateTime, default=datetime.utcnow
     )
@@ -98,7 +101,7 @@ class PersonSchema(ma.ModelSchema):
         model = Person
         sqla_session = db.session
 
-    hunts = fields.Nested("PersonHuntSchema", default=[], many=True)
+    hunts = fields.Nested("PersonHuntPersonSchema", default=[], many=True)
 
 
 class OptionSchema(ma.ModelSchema):
@@ -160,18 +163,15 @@ class HuntQuestionSchema(ma.ModelSchema):
     timestamp = fields.DateTime()
 
 
-class PersonHuntSchema(ma.ModelSchema):
+class PersonHuntPersonSchema(ma.ModelSchema):
     def __init__(self, **kwargs):
         super().__init__(strict=True, **kwargs)
 
     person_id = fields.Int()
     hunt_id = fields.Int()
-    title = fields.Str()
-    description = fields.Str()
-    max_score = fields.Int()
-    order = db.Column(db.Integer)
-    options = fields.Nested("QuestionOptionSchema", default=[], many=True)
-    image = fields.Nested("QuestionImageSchema", default=None)
+    score = fields.Int()
+    rank = fields.Int()
+    start_time = fields.DateTime
 
 
 class QuestionOptionSchema(ma.ModelSchema):
@@ -198,6 +198,8 @@ class QuestionImageSchema(ma.ModelSchema):
     image_id = fields.Int()
     hint = fields.Str()
     url = fields.Str()
+    lat = fields.Float()
+    long = fields.Float()
 
 
 class HuntPersonSchema(ma.ModelSchema):

@@ -71,11 +71,11 @@ def create(person_id, hunt):
     new_hunt = schema.load(hunt, session=db.session).data
 
     # Add the note to the person and database
-    person.hunts.append(new_hunt)
+    db.session.add(new_hunt)
     db.session.commit()
 
     # Serialize and return the newly created note in the response
-    data = schema.dump(hunt).data
+    data = schema.dump(new_hunt).data
 
     return data, 201
 
@@ -91,8 +91,7 @@ def update(person_id, hunt_id, hunt):
     :return:                200 on success
     """
     update_hunt = (
-        Hunt.query.filter(Person.person_id == person_id)
-        .filter(Hunt.hunt_id == hunt_id)
+        Hunt.query.filter(Hunt.person_id == person_id and Hunt.hunt_id == hunt_id)
         .one_or_none()
     )
 
@@ -131,8 +130,7 @@ def delete(person_id, hunt_id):
     """
     # Get the note requested
     hunt = (
-        Hunt.query.filter(Hunt.hunt_id == hunt_id)
-        .filter(Hunt.creator == person_id)
+        Hunt.query.filter(Hunt.person_id == person_id and Hunt.hunt_id == hunt_id)
         .one_or_none()
     )
 

@@ -5,21 +5,21 @@ people data
 
 from flask import make_response, abort
 from config import db
-from models import Person, PersonSchema, Hunt
+from models import Person, PersonSchema, HuntPerson
 
 
-def read_one(person_id):
+def read_one(email_id):
     """
     This function responds to a request for /api/people/{person_id}
     with one matching person from people
 
-    :param person_id:   Id of person to find
+    :param email_id:   Id of person to find
     :return:            person matching id
     """
     # Build the initial query
     person = (
-        Person.query.filter(Person.person_id == person_id)
-        .outerjoin(Hunt)
+        Person.query.filter(Person.email_id == email_id)
+        .outerjoin(HuntPerson)
         .one_or_none()
     )
 
@@ -33,7 +33,7 @@ def read_one(person_id):
 
     # Otherwise, nope, didn't find that person
     else:
-        abort(404, f"Person not found for Id: {person_id}")
+        abort(404, f"Person not found for Id: {email_id}")
 
 
 def create(person):
