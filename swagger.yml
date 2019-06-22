@@ -34,10 +34,10 @@ paths:
                 type: string
                 description: Last name of person to create
               display_name:
-                type: String
+                type: string
                 description: Display Name for the user in the game
               email_id:
-                type: String
+                type: string
                 description: Email id of the user after google login
       responses:
         201:
@@ -54,241 +54,236 @@ paths:
                 type: string
                 description: Last name of the person
               display_name:
-                type: String
+                type: string
                 description: Display Name for the user in the game
               email_id:
-                  type: String
+                  type: string
                   description: Email id of the user after google login
               timestamp:
                 type: string
                 description: Creation/Update timestamp of the person record
 
-  /person/{email_id}:
-    get:
-      operationId: people.read_one
-      tags:
-        - People
-      summary: Read one person
-      description: Read one person
-      parameters:
-        - name: person_id
-          in: path
-          description: Id of the person to get
-          type: integer
-          required: True
-      responses:
-        200:
-          description: Successfully read person from people data operation
-          schema:
-            type: object
-            properties:
-              person_id:
-                type: string
-                description: Id of the person
-              fname:
-                type: string
-                description: First name of the person
-              lname:
-                type: string
-                description: Last name of the person
-              timestamp:
-                type: string
-                description: Creation/Update timestamp of the person record
-              display_name:
-                type: String
-                description: Display Name for the user in the game
-              email_id:
-                type: String
-                description: Email id of the user after google login
-              hunts:
-                type: array
-                items:
-                  properties:
-                    person_id:
-                      type: integer
-                      description: Id of this person who attempted this hunt
-                    hunt_id:
-                      type: integer
-                      description: Id of this hunt
-                    score:
-                      type: integer
-                      description: Score received by person this hunt
-                    rank:
-                      type: integer
-                      description: Rank received by this person
-                    start_time:
-                      type: string
-                      description: Start time of the hunt
+#  /person/{email_id}:
+#    get:
+#      operationId: people.read_one
+#      tags:
+#        - People
+#      summary: Read one person
+#      description: Read one person
+#      parameters:
+#        - name: person_id
+#          in: path
+#          description: Id of the person to get
+#          type: integer
+#          required: True
+#      responses:
+#        200:
+#          description: Successfully read person from people data operation
+#          schema:
+#            type: object
+#            properties:
+#              person_id:
+#                type: string
+#                description: Id of the person
+#              fname:
+#                type: string
+#                description: First name of the person
+#              lname:
+#                type: string
+#                description: Last name of the person
+#              timestamp:
+#                type: string
+#                description: Creation/Update timestamp of the person record
+#              display_name:
+#                type: String
+#                description: Display Name for the user in the game
+#              email_id:
+#                type: String
+#                description: Email id of the user after google login
+#              hunts:
+#                type: array
+#                items:
+#                  properties:
+#                    person_id:
+#                      type: integer
+#                      description: Id of this person who attempted this hunt
+#                    hunt_id:
+#                      type: integer
+#                      description: Id of this hunt
+#                    score:
+#                      type: integer
+#                      description: Score received by person this hunt
+#                    rank:
+#                      type: integer
+#                      description: Rank received by this person
+#                    start_time:
+#                      type: string
+#                      description: Start time of the hunt
+#
+#    put:
+#      operationId: people.update
+#      tags:
+#        - People
+#      summary: Update a person
+#      description: Update a person
+#      parameters:
+#        - name: person_id
+#          in: path
+#          description: Id the person to update
+#          type: integer
+#          required: True
+#        - name: person
+#          in: body
+#          schema:
+#            type: object
+#            properties:
+#              fname:
+#                type: string
+#                description: First name of the person
+#              lname:
+#                type: string
+#                description: Last name of the person
+#              display_name:
+#                type: string
+#                description: Display name of the person
+#      responses:
+#        200:
+#          description: Successfully updated person
+#          schema:
+#            properties:
+#              person_id:
+#                type: integer
+#                description: Id of the person
+#              fname:
+#                type: string
+#                description: First name of the person
+#              lname:
+#                type: string
+#                description: Last name of the person
+#              display_name:
+#                type: String
+#                description: Display Name for the user in the game
+#              email_id:
+#                type: String
+#                description: Email id of the user after google login
+#              timestamp:
+#                type: string
+#                description: Creation/Update timestamp of the person record
+#
+#    delete:
+#      operationId: people.delete
+#      tags:
+#        - People
+#      summary: Delete a person from the database
+#      description: Delete a person
+#      parameters:
+#        - name: person_id
+#          in: path
+#          type: integer
+#          description: Id of the person to delete
+#          required: true
+#      responses:
+#        200:
+#          description: Successfully deleted a person
 
-    put:
-      operationId: people.update
-      tags:
-        - People
-      summary: Update a person
-      description: Update a person
-      parameters:
-        - name: person_id
-          in: path
-          description: Id the person to update
-          type: integer
-          required: True
-        - name: person
-          in: body
-          schema:
-            type: object
-            properties:
-              fname:
-                type: string
-                description: First name of the person
-              lname:
-                type: string
-                description: Last name of the person
-              display_name:
-                type: string
-                description: Display name of the person
-      responses:
-        200:
-          description: Successfully updated person
-          schema:
-            properties:
-              person_id:
-                type: integer
-                description: Id of the person
-              fname:
-                type: string
-                description: First name of the person
-              lname:
-                type: string
-                description: Last name of the person
-              display_name:
-                type: String
-                description: Display Name for the user in the game
-              email_id:
-                type: String
-                description: Email id of the user after google login
-              timestamp:
-                type: string
-                description: Creation/Update timestamp of the person record
-
-    delete:
-      operationId: people.delete
-      tags:
-        - People
-      summary: Delete a person from the database
-      description: Delete a person
-      parameters:
-        - name: person_id
-          in: path
-          type: integer
-          description: Id of the person to delete
-          required: true
-      responses:
-        200:
-          description: Successfully deleted a person
-
-  /hunts:
-    get:
-      operationId: hunts.read_all
-      tags:
-        - Hunts
-      summary: Read the entire set of hunts, sorted by timestamp which are active
-      description: Read the entire set of hunts, sorted by timestamp which are active
-      responses:
-        200:
-          description: Successfully read all active hunts
-          schema:
-            type: array
-            items:
-              properties:
-                hunt_id:
-                  type: integer
-                  description: Id of the hunt
-                person_id:
-                  type: integer
-                  description: Id of the person
-                description:
-                  type: string
-                  description: Description of the hunt
-                title:
-                  type: string
-                  description: Title of the hunt
-                location:
-                  type: string
-                  description: Location of the hunt
-                pass_code:
-                  type: string
-                  description: Passcode of the hunt
-                start_time:
-                  type: string
-                  description: start_time of the hunt
-                end_time:
-                  type: string
-                  description: end_time of the hunt
-                timestamp:
-                  type: string
-                  description: create and update time stamp of the hunt
-                questions:
-                  type: array
-                  items:
-                    properties:
-                      question_id:
-                        type: integer
-                        description: Id of the question
-                      hunt_id:
-                        type: integer
-                        description: Id of the hunt
-                      image_id:
-                        type: integer
-                        description: Id of the image associated with the question
-                      title:
-                        type: string
-                        description: Title of the question
-                      description:
-                        type: string
-                        description: Description of the question
-                      max_score:
-                        type: integer
-                        description: Max score of the question
-                      order:
-                        type: integer
-                        description: Order of the question
-                      options:
-                        type: array
-                        items:
-                          properties:
-                            option_id:
-                              type: integer
-                              description: Id of the option
-                            question_id:
-                              type: integer
-                              description: Id of the question
-                            description:
-                              type: string
-                              description: description of the option
-                            is_correct:
-                              type: boolean
-                              description: is the option correct
-                      image:
-                        type: object
-                        items:
-                          properties:
-
-                            hint = fields.Str()
-                            url = fields.Str()
-                            lat = fields.Float()
-                            long = fields.Float()
-                            image_id:
-                              type: integer
-                              description: Id of the image
-                            hint:
-                              type: string
-                              description: hint for the image
-                            url:
-                              type: string
-                              description: url for the image
-                            lat:
-                              type: number
-                              description: latitude of position where image is clicked
-                            long:
-                              type: number
-                              description: longitude of position where image is clicked
+#  /hunts:
+#    get:
+#      operationId: hunts.read_all
+#      tags:
+#        - Hunts
+#      summary: Read the entire set of hunts, sorted by timestamp which are active
+#      description: Read the entire set of hunts, sorted by timestamp which are active
+#      responses:
+#        200:
+#          description: Successfully read all active hunts
+#          schema:
+#            type: array
+#            items:
+#              properties:
+#                hunt_id:
+#                  type: integer
+#                  description: Id of the hunt
+#                person_id:
+#                  type: integer
+#                  description: Id of the person
+#                description:
+#                  type: string
+#                  description: Description of the hunt
+#                title:
+#                  type: string
+#                  description: Title of the hunt
+#                location:
+#                  type: string
+#                  description: Location of the hunt
+#                pass_code:
+#                  type: string
+#                  description: Passcode of the hunt
+#                start_time:
+#                  type: string
+#                  description: start_time of the hunt
+#                end_time:
+#                  type: string
+#                  description: end_time of the hunt
+#                timestamp:
+#                  type: string
+#                  description: create and update time stamp of the hunt
+#                questions:
+#                  type: array
+#                  items:
+#                    properties:
+#                      question_id:
+#                        type: integer
+#                        description: Id of the question
+#                      hunt_id:
+#                        type: integer
+#                        description: Id of the hunt
+#                      image_id:
+#                        type: integer
+#                        description: Id of the image associated with the question
+#                      title:
+#                        type: string
+#                        description: Title of the question
+#                      description:
+#                        type: string
+#                        description: Description of the question
+#                      max_score:
+#                        type: integer
+#                        description: Max score of the question
+#                      order:
+#                        type: integer
+#                        description: Order of the question
+#                      options:
+#                        type: array
+#                        items:
+#                          properties:
+#                            option_id:
+#                              type: integer
+#                              description: Id of the option
+#                            question_id:
+#                              type: integer
+#                              description: Id of the question
+#                            description:
+#                              type: string
+#                              description: description of the option
+#                            is_correct:
+#                              type: boolean
+#                              description: is the option correct
+#                      image:
+#                        type: object
+#                        items:
+#                          properties:
+#                            image_id:
+#                              type: integer
+#                              description: Id of the image
+#                            hint:
+#                              type: string
+#                              description: hint for the image
+#                            url:
+#                              type: string
+#                              description: url for the image
+#                            lat:
+#                              type: number
+#                              description: latitude of position where image is clicked
+#                            long:
+#                              type: number
+#                              description: longitude of position where image is clicked

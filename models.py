@@ -92,6 +92,12 @@ class HuntPerson(db.Model):
     )
     attempt = db.Column(db.Text)
 
+    __table_args__ = (
+        db.PrimaryKeyConstraint(
+            hunt_id,
+            person_id),
+        {})
+
 
 class PersonSchema(ma.ModelSchema):
     def __init__(self, **kwargs):
